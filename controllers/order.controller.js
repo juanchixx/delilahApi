@@ -1,45 +1,15 @@
-var models = require('../models')
+var {Order, User, Status} = require('../models/index')
 var jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser');
 
 const firma = 'd3l1l4h';    
 
-//#region Relaciones
 
-// Relación Order => Status
-models.order.belongsTo(models.status, {
-    foreignKey: 'cod_status'    
-  });
-models.status.hasMany(models.order, {
-    foreignKey: 'cod_status',    
-});
-
-// Relación Order => User
-models.order.belongsTo(models.user, {
-    foreignKey: 'cod_user'    
-  });
-models.user.hasMany(models.order, {
-    foreignKey: 'cod_user'
-});
-
-// Relación Order => Order_item <= Product
-models.product.belongsToMany(models.order, {
-    through: models.order_item, 
-    foreignKey: 'id_product',
-    otherKey: 'id_order'
-  });
-models.order.belongsToMany(models.product, {
-    through: models.order_item, 
-    foreignKey: 'id_order',
-    otherKey: 'id_product'
-  });
-
-//#endregion
 
 exports.createOrder = async function (req, res) {
     const {cod_user, description, total_price, order_items} = req.body;    
     try {        
-        var order = await models.order.create({ 
+        var order = await Order.create({ 
             cod_user: cod_user,
             cod_status: 1,
             date: new Date(),
@@ -47,7 +17,7 @@ exports.createOrder = async function (req, res) {
             total_price: total_price
         }).then((data)=>{
             order_items.forEach((item) =>{
-                    var item_order = models.order_item.create({
+                    var item_order = Order_item.create({
                         cod_order : data.id_order,
                         cod_product: item.cod_product,
                         quantity: item.quantity,
@@ -62,7 +32,7 @@ exports.createOrder = async function (req, res) {
 }
 exports.getOrders = async function(req,res){
     try {
-        var orders = await models.order.findAll();        
+        var orders = await Order.findAll();        
         return res.status(200).json({ status: 200, data: orders, message: "Ordenes recibidas correctamente" });
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
@@ -72,15 +42,15 @@ exports.getOrder = async function(req,res){
     try {
         const idOrder = parseInt(req.params.idOrder);
 
-        var orders = await models.order.findAll({
+        var orders = await Order.findAll({
             attributes: ['id_order', 'date', 'description','total_price'],
             where: {
                 id_order: idOrder
               },
             include: [{
-                model: models.user
+                model: User
             }, {
-                model: models.status
+                model: Status
             }]
         });       
         if (orders.length === 0){
@@ -97,7 +67,7 @@ exports.updateOrder = async function(req,res){
     try {
         const idOrder = parseInt(req.params.idOrder);
         const {description, cod_status, total_price} = req.body;
-        var orders = await models.order.findAll({
+        var orders = await Order.findAll({
             where: {
                 id_order: idOrder
               }
@@ -106,7 +76,7 @@ exports.updateOrder = async function(req,res){
             res.status(403).json({error : 'No existe la orden solicitada.'});
             return;
         } 
-        var updatedOrder = await models.order.update({ 
+        var updatedOrder = await Order.update({ 
             cod_status: cod_status,
             description: description,
             total_price: total_price
@@ -124,7 +94,7 @@ exports.deleteOrder = async function(req,res){
     try {
         const idOrder = parseInt(req.params.idOrder);
 
-        var orders = await models.order.findAll({            
+        var orders = await Order.findAll({            
             where: {
                 id_order: idOrder
               }
@@ -133,12 +103,12 @@ exports.deleteOrder = async function(req,res){
             res.status(403).json({error : 'No se encuentra la Orden que se quiere borrar.'});
             return;
         }
-        await models.order_item.destroy({            
+        await Order_item.destroy({            
             where: {
                 cod_order: idOrder
               }
         });   
-        await models.order.destroy({            
+        await Order.destroy({            
             where: {
                 id_order: idOrder
               }

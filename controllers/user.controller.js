@@ -1,11 +1,11 @@
-var models = require('../models')
+var {User} = require('../models/index')
 var jwt = require('jsonwebtoken')
 
 const firma = 'd3l1l4h';
 
 exports.getUsers = async function (req, res) {
     try {
-        var users = await models.user.findAll();        
+        var users = await User.findAll();        
         return res.status(200).json({ status: 200, data: users, message: "Usuarios recibidos correctaments" });
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
@@ -15,7 +15,7 @@ exports.getUsers = async function (req, res) {
 exports.checkExistingMail = async function (req,res, next){
     const {email} = req.query;
     try {
-        var users = await models.user.findAll({
+        var users = await User.findAll({
             where: { email : email }
         });
         if(users.length > 0){
@@ -32,7 +32,7 @@ exports.checkExistingMail = async function (req,res, next){
 exports.createUser = async function (req, res) {
     const {username, name, email, telephone, address, password} = req.query;
     try {
-        var user = await models.user.create({ 
+        var user = await User.create({ 
             username: username,
             name: name,
             email: email,
@@ -49,7 +49,7 @@ exports.createUser = async function (req, res) {
 exports.login = async function (req, res) {
     const {email: _email, password: _password} = req.query;         
     try {
-        var users = await models.user.findAll({
+        var users = await User.findAll({
             where: { email : _email }
         });
         if (users.length === 0){

@@ -38,8 +38,6 @@ async function InsertStatus(){
     console.log('Estados creados con éxito!');
 }
 
-
-
 async function InsertOrder(){
     const products = await Order(sequelize, DataTypes).bulkCreate([
         { cod_status: 1 , cod_username: 1, date: '10/01/2004', description: 'primer pedido', total_price: 10.40 } ,                
