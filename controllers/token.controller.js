@@ -12,7 +12,7 @@ exports.checkToken = async function (req, res, next) {
         req.userToken = tokenVerified;
         next();
     } catch (e) {
-        return res.status(400).json({ status: 404, message: e.message });
+        return res.status(404).json({ status: 404, message: e.message });
     }
 }
 
@@ -21,5 +21,5 @@ exports.isAdmin = async function (req, res, next) {
     if (req.userToken.admin === 1)
         next();
     else
-        return res.status(403).json({ error: 'Unauthorized access' });
+        return res.status(401).json({ error: 'Unauthorized access' });
 }

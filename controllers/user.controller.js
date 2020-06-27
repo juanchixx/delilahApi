@@ -6,7 +6,7 @@ const firma = 'd3l1l4h';
 exports.getUsers = async function (req, res) {
     try {
         var users = await User.findAll();        
-        return res.status(200).json({ status: 200, data: users, message: "Usuarios recibidos correctaments" });
+        return res.status(200).json({ status: 200, data: users, message: "Usuarios recibidos correctamente" });
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
     }
@@ -19,7 +19,7 @@ exports.checkExistingMail = async function (req,res, next){
             where: { email : email }
         });
         if(users.length > 0){
-            res.status(403).json({error : 'El mail ya se encuentra registrado'});
+            res.status(400).json({error : 'El mail ya se encuentra registrado'});
             return;
         }else{
             next();
@@ -29,7 +29,7 @@ exports.checkExistingMail = async function (req,res, next){
     }
 }
 
-exports.createUser = async function (req, res) {
+exports.register = async function (req, res) {
     const {username, name, email, telephone, address, password} = req.query;
     try {
         var user = await User.create({ 
@@ -53,7 +53,7 @@ exports.login = async function (req, res) {
             where: { email : _email }
         });
         if (users.length === 0){
-            res.status(403).json({error : 'No existe ningún usuario registrado con ese email'});
+            res.status(404).json({error : 'No existe ningún usuario registrado con ese email'});
             return;
         }
         usuario = users[0];
@@ -64,7 +64,7 @@ exports.login = async function (req, res) {
                 , firma);
             res.status(200).json({status: 200, message: "Login correcto, pass: " + usuario.username, token: token})
         }else{
-            res.status(403).json({error: 'Contraseña incorrecta'})
+            res.status(400).json({error: 'Contraseña incorrecta'})
         }        
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });

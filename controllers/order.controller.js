@@ -1,10 +1,4 @@
 var {Order, Order_item, User, Status} = require('../models/index')
-var jwt = require('jsonwebtoken')
-const bodyParser = require('body-parser');
-
-const firma = 'd3l1l4h';    
-
-
 
 exports.createOrder = async function (req, res) {
     const { description, total_price, order_items } = req.body;    
