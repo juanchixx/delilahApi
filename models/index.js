@@ -44,13 +44,11 @@ User.hasMany(Order, {
 // Relación Order => Order_item <= Product
 Product.belongsToMany(Order, {
   through: Order_item, 
-  foreignKey: 'id_product',
-  otherKey: 'id_order'
+  foreignKey: 'cod_product'
 });
 Order.belongsToMany(Product, {
   through: Order_item, 
-  foreignKey: 'id_order',
-  otherKey: 'id_product'
+  foreignKey: 'cod_order'
 });
 
 //#endregion

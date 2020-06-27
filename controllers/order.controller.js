@@ -1,4 +1,4 @@
-var {Order, User, Status} = require('../models/index')
+var {Order, Order_item, User, Status} = require('../models/index')
 var jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser');
 
@@ -7,10 +7,12 @@ const firma = 'd3l1l4h';
 
 
 exports.createOrder = async function (req, res) {
-    const {cod_user, description, total_price, order_items} = req.body;    
+    const { description, total_price, order_items } = req.body;    
+    console.log(req.userToken);
+    console.log(description, total_price, order_items);
     try {        
         var order = await Order.create({ 
-            cod_user: cod_user,
+            cod_user: req.userToken.id,
             cod_status: 1,
             date: new Date(),
             description: description,
@@ -18,7 +20,7 @@ exports.createOrder = async function (req, res) {
         }).then((data)=>{
             order_items.forEach((item) =>{
                     var item_order = Order_item.create({
-                        cod_order : data.id_order,
+                        cod_order : data.cod_order,
                         cod_product: item.cod_product,
                         quantity: item.quantity,
                         price: item.price

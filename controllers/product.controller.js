@@ -1,7 +1,4 @@
-var {Product, Order_item} = require('../models/index')
-var jwt = require('jsonwebtoken')
-
-const firma = 'd3l1l4h';    
+var {Product, Order_item} = require('../models/index') 
 
 exports.createProduct = async function (req, res) {
     const {description, price, stock, favorite} = req.body;
