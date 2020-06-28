@@ -60,6 +60,12 @@ https://app.swaggerhub.com/apis/delilah/DelilahAPI/1.0.0
 
 In order to test all the requests available of the app, there's a **Postman** Collection that you can find [here](https://www.getpostman.com/collections/e6c522c4d8a8ebfd2547).
 
+🔐 If you need to have admin permissions (like Products administration) use this sample data:
+```
+email: admin@gmail.com
+password: admindeli
+```
+
 ## ⛏️ Built Using <a name = "built_using"></a>
 
 - [MySQL](https://www.mysql.com/) - Database
